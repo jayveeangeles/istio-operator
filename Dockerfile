@@ -1,4 +1,4 @@
-FROM golang:1.14.7 as builder
+FROM golang:1.9 as builder
 
 WORKDIR /go/src/github.com/maistra/istio-operator
 
