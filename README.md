@@ -378,7 +378,7 @@ The following are known issues that need to be addressed:
 Patch image locations temporarily:  
 
 ```
-oc adm policy add-cluster-role-to-user prometheus-istio-system  -z prometheus```
+oc adm policy add-cluster-role-to-user prometheus-istio-system  -z prometheus
 oc patch deployment prometheus --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "registry.access.redhat.com/openshift3/oauth-proxy:latest" }]'
 oc patch deployment grafana --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "registry.access.redhat.com/openshift3/oauth-proxy:latest" }]'
 oc patch deployment kiali --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "docker-registry.default.svc:5000/kiali-operator/kiali:v1.0.5" }]'
