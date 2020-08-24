@@ -382,4 +382,10 @@ oc adm policy add-cluster-role-to-user prometheus-istio-system  -z prometheus
 oc patch deployment prometheus --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "registry.access.redhat.com/openshift3/oauth-proxy:latest" }]'
 oc patch deployment grafana --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "registry.access.redhat.com/openshift3/oauth-proxy:latest" }]'
 oc patch deployment kiali --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "docker-registry.default.svc:5000/kiali-operator/kiali:v1.0.5" }]'
+
+MASTER_NODE_IP=$(oc get nodes --selector="node-role.kubernetes.io/master=true" -o json | jq '.items[0].status.addresses[0].address' -r )
+oc patch route kiali --type='json' -p="[{'op': 'replace', 'path': '/spec/host', 'value': 'kiali-istio-system.$MASTER_NODE_IP.nip.io' }]"
+oc patch route prometheus --type='json' -p="[{'op': 'replace', 'path': '/spec/host', 'value': 'prometheus-istio-system.$MASTER_NODE_IP.nip.io' }]"
+oc patch route istio-ingressgateway --type='json' -p="[{'op': 'replace', 'path': '/spec/host', 'value': 'istio-ingressgateway-istio-system.$MASTER_NODE_IP.nip.io' }]"
+
 ```
