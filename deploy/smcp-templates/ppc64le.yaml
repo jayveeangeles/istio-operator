@@ -1,0 +1,77 @@
+# https://maistra-0-12-0--maistra.netlify.app/docs/getting_started/install/
+apiVersion: maistra.io/v1
+kind: ServiceMeshControlPlane
+metadata:
+  name: basic-install
+spec:
+  threeScale:
+    enabled: false
+  istio:
+    global:
+      oauthproxy:
+        image: oauth-proxy
+        hub: registry.access.redhat.com/openshift3
+        tag: v3.11.170
+      multitenant: true
+      proxy_init:
+        image: proxy-init-centos7
+      hub: docker-registry.default.svc:5000/istio-system
+      tag: 1.0.0
+      mtls:
+        enabled: true
+      proxy:
+        proxy_init:
+          image: proxy-init-centos7
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 750m
+            memory: 1Gi
+
+    gateways:
+      istio-egressgateway:
+        autoscaleEnabled: false
+        autoscaleMin: 1
+        autoscaleMax: 5
+      istio-ingressgateway:
+        autoscaleEnabled: false
+        autoscaleMin: 1
+        autoscaleMax: 5
+        ior_enabled: false
+
+    mixer:
+      policy:
+        autoscaleEnabled: false
+
+      telemetry:
+        autoscaleEnabled: false
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1G
+          limits:
+            cpu: 750m
+            memory: 4G
+
+    pilot:
+      autoscaleEnabled: false
+      traceSampling: 100.0
+
+    kiali:
+      enabled: true
+      hub: docker-registry.default.svc:5000/kiali-operator
+      image: kiali
+      tag: v1.0.5
+      dashboard:
+        user: admin
+        passphrase: admin
+
+    tracing:
+      enabled: false
+      # hub: docker-registry.default.svc:5000/observability
+      # jaeger:
+      #   tag: 1.13.1
+      #   template: all-in-one
+      #   agentStrategy: DaemonSet
